@@ -1,12 +1,12 @@
 ---
 type: progress
 title: 当前进度
-timestamp: 2026-06-27T00:00:00+08:00
+timestamp: 2026-06-28T17:11:15+08:00
 ---
 
 # 当前进度 — 新 agent 从这里开始
 
-> 最后更新：2026-06-28（上下文体系已落地 + git 初始提交）
+> 最后更新：2026-06-28 17:11:15（已推送到 GitHub Public）
 
 ## 已完成
 
@@ -15,11 +15,11 @@ timestamp: 2026-06-27T00:00:00+08:00
 - [x] 上下文与语料体系方案文档（Cursor plan）
 - [x] **上下文体系落地**：`AGENTS.md`、`.context/`、`journal/`、Cursor Hooks、`.gitignore`
 - [x] 手动整理示例：`journal/conversations/2026-06-27.md`
+- [x] GitHub 仓库：[Archie-Liao/pushMe-APP](https://github.com/Archie-Liao/pushMe-APP)（Public，`main` 已推送）
 
 ## 未完成 / 待你做
 
 - [ ] 在 Cursor 发一条测试消息，确认 `journal/corpus/` 有新增 jsonl 行
-- [ ] 创建 GitHub **私有**仓库并 `git push`（见 [GITHUB_SETUP.md](GITHUB_SETUP.md)）
 - [ ] pushME Skill 真实激活测试（说「推手」走首次导入）
 - [ ] APP scaffold（Vite+React+PWA + Supabase）
 
