@@ -3,20 +3,20 @@
   "hooks": {
     "beforeSubmitPrompt": [
       {
-        "command": "python .cursor/hooks/capture_prompt.py",
-        "timeout": 10
+        "command": ".cursor/hooks/run_capture_prompt.cmd",
+        "timeout": 15
       }
     ],
     "afterAgentResponse": [
       {
-        "command": "python .cursor/hooks/capture_response.py",
-        "timeout": 30
+        "command": ".cursor/hooks/run_capture_response.cmd",
+        "timeout": 45
       }
     ],
     "sessionEnd": [
       {
-        "command": "python .cursor/hooks/session_end.py",
-        "timeout": 10
+        "command": ".cursor/hooks/run_session_end.cmd",
+        "timeout": 15
       }
     ]
   }

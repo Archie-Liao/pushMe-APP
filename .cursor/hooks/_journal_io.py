@@ -54,6 +54,20 @@ def extract_text(data: dict, keys: tuple[str, ...]) -> str:
     return ""
 
 
+def log_hook_trace(event: str, data: dict, text: str) -> None:
+    """Always log hook invocations (keys + whether text extracted) for diagnosis."""
+    trace = project_root() / "journal" / "corpus" / "_hook_trace.log"
+    trace.parent.mkdir(parents=True, exist_ok=True)
+    line = {
+        "ts": now_ts(),
+        "event": event,
+        "keys": list(data.keys()) if isinstance(data, dict) else [],
+        "text_len": len(text),
+    }
+    with open(trace, "a", encoding="utf-8") as f:
+        f.write(json.dumps(line, ensure_ascii=False) + "\n")
+
+
 def append_entry(role: str, text: str, event: str) -> None:
     if not text or not text.strip():
         return

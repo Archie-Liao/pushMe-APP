@@ -1,7 +1,7 @@
 """Capture agent response → journal/corpus/*.jsonl"""
 import sys
 
-from _journal_io import append_entry, debug_log, extract_text, read_hook_input
+from _journal_io import append_entry, debug_log, extract_text, log_hook_trace, read_hook_input
 
 ASSISTANT_KEYS = (
     "response",
@@ -18,6 +18,7 @@ if __name__ == "__main__":
         data = read_hook_input()
         debug_log(data)
         text = extract_text(data, ASSISTANT_KEYS)
+        log_hook_trace("afterAgentResponse", data, text)
         append_entry("assistant", text, "afterAgentResponse")
     except Exception as e:
         debug_log({"error": str(e), "script": "capture_response.py"})

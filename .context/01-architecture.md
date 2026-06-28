@@ -22,6 +22,22 @@ pushMe-APP/
 └── 任务榜.xlsx
 ```
 
+## 推送（Web Push，不是微信/钉钉）
+
+**默认方案**：浏览器 / PWA 的 **Web Push** + Service Worker，**不接微信、钉钉**（要接需另做企业微信/钉钉机器人，成本高、审批多）。
+
+| 场景 | 能否收到 |
+|------|----------|
+| 电脑 Chrome/Edge，曾打开过 APP 并允许通知 | 可以（即使浏览器关着，OS 级通知） |
+| 手机安卓，PWA 已「添加到主屏幕」并允许通知 | 可以 |
+| iPhone，PWA 已添加到主屏幕（iOS 16.4+） | 可以，但不如原生稳 |
+| APP 从未打开、从未点「允许通知」 | **收不到** |
+| 电脑关机、手机断网 | **收不到** |
+
+**谁发**：Supabase `pg_cron` 定时 → Edge Function 查任务 → 调 DeepSeek 写催办句 → 推送到你已订阅的 Web Push 端点。
+
+**托管**：前端 PWA 部署在 **Vercel**；API/数据库在 **Supabase**（[supabase.com](https://supabase.com)）。
+
 ## pushME APP 方案（未实施）
 
 | 层 | 选型 |

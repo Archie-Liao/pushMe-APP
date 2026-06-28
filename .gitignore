@@ -20,6 +20,7 @@ Thumbs.db
 
 # Hook debug (optional local debug)
 journal/corpus/_hook_debug.log
+journal/corpus/_hook_trace.log
 
 # Distill output (regenerate from corpus)
 distill/

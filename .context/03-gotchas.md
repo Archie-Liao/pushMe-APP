@@ -27,6 +27,13 @@ timestamp: 2026-06-27T00:00:00+08:00
 
 - 本机：Python 3.14.5（`C:\Python314`）；Hooks 依赖 `python` 在 PATH
 
+### Hooks 未生成 jsonl（Cursor 子进程找不到 python）
+
+- **现象**：`journal/corpus/` 只有 `.gitkeep`，无自动归档
+- **原因**：`hooks.json` 里 `python` 在 Cursor Hook 环境的 PATH 中可能不存在
+- **解法**：改用 `run_capture_*.cmd` + `C:\Python314\python.exe` 绝对路径；看 `journal/corpus/_hook_trace.log` 是否增长
+- **整理 vs Hook**：「整理」= 你说出口才写 `conversations/`；Hook = 发消息/回复时自动写 `corpus/`（见 `AGENTS.md`）
+
 ## AI / 工作流
 
 ### Skill 无跨会话记忆
