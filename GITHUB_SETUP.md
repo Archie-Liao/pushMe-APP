@@ -13,7 +13,7 @@
 
 **push（推送）** = 把本地 commit 上传到 GitHub，这样换电脑、丢硬盘都能 `clone` 拉回来。
 
-本项目的语料含个人表达，远程仓库必须选 **Private（私有）**，只有你能看。
+本仓库当前为 **Public**（https://github.com/Archie-Liao/pushMe-APP）。`journal/` 含个人语料；若介意公开，可在 GitHub 仓库 Settings 改为 Private。
 
 ---
 
@@ -71,7 +71,7 @@ git commit -m "Add context system, journal hooks, and project memory"
 1. 浏览器打开：https://github.com/new  
 2. **Repository name**：例如 `pushMe-APP`（可与本地文件夹名不同，但建议一致）  
 3. **Description**：可选，如「pushME AI 项目经理」  
-4. **可见性**：必须选 **Private**  
+4. **可见性**：Public 或 Private（当前仓库为 Public）  
 5. **不要勾选**：
    - Add a README file  
    - Add .gitignore  
@@ -178,6 +178,52 @@ git push
 
 ---
 
+## 让 Cursor AI 帮你提交/上传（提示词速查）
+
+> **给你查阅用**：复制下面句子发给 AI 即可。  
+> **给 Agent 的规则**见 [AGENTS.md](AGENTS.md)「Git 与 GitHub」节。
+
+### Agent 默认不会自动上传
+
+| 你说的话 | Agent 会不会 push |
+|----------|-------------------|
+| 整理、更新进度、改代码 | **不会**（只改本地文件） |
+| 只说了 commit / 提交 | **不会 push**（只本地快照） |
+| 明确说了 push / 上传 GitHub | **会** commit + push |
+
+`整理` ≠ 上传；`更新进度` ≠ 上传。
+
+### 想上传时 — 复制这些提示词
+
+| 你想做什么 | 发给 AI 的提示词（任选一句） |
+|------------|------------------------------|
+| **提交并上传**（最常用） | `commit 并 push 到 GitHub` |
+| 同上 | `把当前改动提交并同步到远程` |
+| 同上 | `上传 GitHub` |
+| **只本地提交，先不上传** | `只 commit，不要 push` |
+| 同上 | `先本地提交，等我确认再 push` |
+| **指定文件** | `只 commit 并 push AGENTS.md 和 conversations` |
+| **排除 corpus** | `除了 corpus 都提交并 push` |
+| **完全不要动 git** | `别提交` / 不提 commit、push 即可 |
+
+### 和 corpus 的关系
+
+`journal/corpus/*.jsonl` 由 **Hooks 自动写本地**，不会自动进 GitHub。  
+除非你明确说要提交 corpus，一般**不要** push（体积大、原始语料）。
+
+### 自己检查有没有上传成功
+
+```powershell
+cd d:\WorkProject\pushMe-APP
+git status
+```
+
+- `Your branch is up to date with 'origin/main'` → 本地和 GitHub 一致  
+- `ahead of 'origin/main' by N commits` → 有本地提交**还没 push**  
+- 网页刷新 https://github.com/Archie-Liao/pushMe-APP 看文件是否更新
+
+---
+
 ## 换电脑继续开发
 
 ```powershell
@@ -217,7 +263,7 @@ cd pushMe-APP
 
 ### 仓库必须是私有吗？
 
-→ **是**。`journal/` 含个人对话语料，公开仓库会被他人看到。
+→ **不必**。当前为 Public。若不想公开 `journal/` 语料，可改为 Private（Settings → Danger zone → Change visibility）。
 
 ---
 

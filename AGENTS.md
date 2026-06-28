@@ -84,8 +84,51 @@ pushME 是**主动的项目经理/管家**，不是被动记事本：
 - **用户**：AI 应用层初学者，不懂编程，规划强、执行弱
 - **详细方案**：见 Cursor plan 或 `.context/` 各文件
 
+## Git 与 GitHub
+
+**默认**：改文件 ≠ commit ≠ push。未经用户明确要求，**禁止** `git commit`、**禁止** `git push`。
+
+| 用户说什么 | Agent 做什么 |
+|------------|--------------|
+| 整理、更新进度、开发任务 | 只改工作区文件 |
+| 只提 commit / 提交 | 仅 `git commit`，不 push |
+| 明确 push / 上传 GitHub / commit 并 push | commit 后 push（用户未禁止时） |
+| 只 commit 不要 push | 仅 commit |
+
+用户可复制粘贴的提示词速查表见 **[GITHUB_SETUP.md →「让 Cursor AI 帮你提交/上传」](GITHUB_SETUP.md)**。
+
 ## 禁止
 
 - 编造进度或假装读过未打开的文件
 - 把 `journal/corpus` 当上下文塞进每次对话
+- 未经用户明确要求执行 `git commit` 或 `git push`（见上节）
 - 未经用户确认推送 force 到 main
+- 把**真实** API key / secret 写入会被 `git commit` 的文件（见下节）
+
+## 密钥与 `.env`（必读）
+
+| 文件 | 内容 | 是否 push GitHub |
+|------|------|------------------|
+| **`.env.local`** | 你的**真** URL、key | **否**（`.gitignore` 已忽略） |
+| **`.env.example`** | 占位符模板，说明需要哪些变量 | **是**（故意公开，不含真密钥） |
+
+### 可以给 AI 什么
+
+- **可以**在对话里提供 Supabase URL、**publishable / anon** key，便于配置开发环境。
+- **不要**在对话里提供 **service_role / secret** key（仅 Supabase 后台与 Edge Function 使用）。
+
+### Agent 必须遵守
+
+1. 真实密钥只写入 **`.env.local`**（或 Supabase Dashboard 密钥栏），**禁止**写入 `README`、`.ts`、`.md`、`.env.example` 再 commit。
+2. 新增环境变量时：更新 **`.env.example`（假值）** + 告知用户在 **`.env.local`（真值）** 填写。
+3. commit 前若 `git status` 出现 `.env.local` → **不得 commit**；检查 `.gitignore`。
+
+### 换电脑
+
+```powershell
+git clone ...
+copy .env.example .env.local
+# 编辑 .env.local，填入 Supabase 控制台的真值
+```
+
+`.env.example` = 说明书；`.env.local` = 只在你电脑抽屉里的真配置。

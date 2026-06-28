@@ -13,6 +13,11 @@ pushMe-APP/
 ├── AGENTS.md
 ├── .context/
 ├── journal/
+├── supabase/              # SQL migrations + 设置说明
+├── web/                   # pushME PWA（Vite + React + TS）
+│   ├── src/
+│   ├── vercel.json
+│   └── package.json
 ├── .cursor/
 │   ├── hooks/             # 对话语料自动采集
 │   └── skills/            # 项目内技能
@@ -38,17 +43,16 @@ pushMe-APP/
 
 **托管**：前端 PWA 部署在 **Vercel**；API/数据库在 **Supabase**（[supabase.com](https://supabase.com)）。
 
-## pushME APP 方案（未实施）
+## pushME APP（阶段 0 已 scaffold）
 
-| 层 | 选型 |
-|----|------|
-| 客户端 | React + Vite + TypeScript + Tailwind + shadcn/ui + vite-plugin-pwa |
-| 双主题 | CSS 变量切换修仙 / 现代 |
-| 后端 | Supabase 免费档（Postgres + Auth + Realtime + Edge Functions + pg_cron） |
-| AI | DeepSeek API（仅 Edge Function 调用，key 不进浏览器） |
-| 推送 | Web Push + Service Worker |
-| 托管 | Vercel 或 Cloudflare Pages |
-| 上架 | 后期 Capacitor 套壳 iOS/Android |
+| 层 | 选型 | 状态 |
+|----|------|------|
+| 客户端 | React + Vite + TypeScript + Tailwind + vite-plugin-pwa | `web/` 已建 |
+| 双主题 | CSS 变量 `modern` / `xiuxian` | 壳已做 |
+| 后端 | Supabase | 项目已建；schema 待 Dashboard 执行 |
+| AI | DeepSeek（Edge Function） | 阶段 2 |
+| 推送 | Web Push + Service Worker | PWA 插件已配；业务阶段 3 |
+| 托管 | Vercel（Root Directory = `web`） | 待连接 |
 
 ## 上下文与语料体系
 

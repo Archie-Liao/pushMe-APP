@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pushME — 现代 5 方向 Demo 画廊</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Literata:opsz,wght@7..72,400;7..72,600&family=Plus+Jakarta+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        text-wrap: pretty;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: #0a0a0b;
+        color: #e4e4e7;
+        font-family: system-ui, sans-serif;
+      }
+
+      .gallery-header {
+        padding: 12px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .gallery-header h1 {
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0;
+        opacity: 0.85;
+      }
+
+      .gallery-header p {
+        margin: 0;
+        font-size: 12px;
+        opacity: 0.5;
+      }
+
+      .gallery-stage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+        min-height: calc(100vh - 52px);
+      }
+
+      .canvas-scaler {
+        transform-origin: top center;
+      }
+
+      .canvas {
+        width: 1280px;
+        height: 800px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+      }
+
+      .screen {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .screen.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* —— Tweaks —— */
+      #tweaks-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 10000;
+        padding: 10px 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        background: rgba(24, 24, 27, 0.92);
+        color: #fff;
+        font-size: 13px;
+        cursor: pointer;
+        backdrop-filter: blur(12px);
+      }
+
+      #tweaks-toggle:hover {
+        background: rgba(40, 40, 45, 0.95);
+      }
+
+      #tweaks-panel {
+        position: fixed;
+        bottom: 68px;
+        right: 20px;
+        width: 300px;
+        z-index: 10000;
+        background: rgba(24, 24, 27, 0.96);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 16px;
+        font-size: 13px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      }
+
+      #tweaks-panel.hidden {
+        display: none;
+      }
+
+      #tweaks-panel h2 {
+        margin: 0 0 12px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      #tweaks-panel label {
+        display: block;
+        margin-bottom: 4px;
+        opacity: 0.65;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      #tweaks-panel select {
+        width: 100%;
+        margin-bottom: 12px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: #27272a;
+        color: #f4f4f5;
+        font-size: 13px;
+        color-scheme: dark;
+      }
+
+      #tweaks-panel select option {
+        color: #18181b;
+        background: #ffffff;
+      }
+
+      .tweaks-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+
+      .tweaks-btn {
+        display: block;
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #e4e4e7;
+        font-size: 12px;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.12s, border-color 0.12s;
+      }
+
+      .tweaks-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.22);
+      }
+
+      .tweaks-btn.active {
+        background: rgba(94, 106, 210, 0.35);
+        border-color: rgba(94, 106, 210, 0.6);
+        color: #fff;
+      }
+
+      .tweaks-btn-view {
+        flex: 1;
+        text-align: center;
+        padding: 8px 6px;
+      }
+
+      .tweaks-view-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+
+      .tweaks-hint {
+        font-size: 11px;
+        opacity: 0.45;
+        line-height: 1.45;
+        margin-top: 8px;
+      }
+
+      /* shared utilities */
+      .btn {
+        cursor: pointer;
+        border: none;
+        font: inherit;
+        transition: background 0.15s ease-out, transform 0.15s ease-out,
+          opacity 0.15s ease-out;
+      }
+
+      .btn:active {
+        transform: scale(0.98);
+      }
+
+      .input {
+        width: 100%;
+        font: inherit;
+        outline: none;
+      }
+
+      .input:focus {
+        outline: 2px solid var(--accent, #5e6ad2);
+        outline-offset: 1px;
+      }
+
+      .tag-s {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .tag-a {
+        background: #e4f4f1;
+        color: #0f766e;
+      }
+      .tag-b {
+        background: #ffedd5;
+        color: #c2410c;
+      }
+      .tag-c {
+        background: #f3f4f6;
+        color: #4b5563;
+      }
+
+      /* ═══ M1 Linear Dark ═══ */
+      .m1 {
+        --bg: #08090a;
+        --surface: #16171c;
+        --surface2: #1e1f25;
+        --text: #f7f8f8;
+        --muted: #9ca3af;
+        --hairline: rgba(255, 255, 255, 0.06);
+        --accent: #5e6ad2;
+        --font: 'Space Grotesk', system-ui, sans-serif;
+        --mono: 'JetBrains Mono', monospace;
+        --radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .m1 .wordmark-main {
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        font-size: 13px;
+      }
+      .m1 .wordmark-sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      .m1.login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .m1 .login-card {
+        width: 380px;
+        padding: 32px;
+        background: var(--surface);
+        border: 1px solid var(--hairline);
+        border-radius: 12px;
+      }
+      .m1 .login-card h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 16px 0 8px;
+      }
+      .m1 .login-card p {
+        color: var(--muted);
+        margin: 0 0 24px;
+        font-size: 13px;
+      }
+      .m1 .input {
+        padding: 10px 12px;
+        background: var(--surface2);
+        border: 1px solid var(--hairline);
+        border-radius: 6px;
+        color: var(--text);
+        margin-bottom: 12px;
+      }
+      .m1 .btn-primary {
+        width: 100%;
+        padding: 10px;
+        background: var(--accent);
+        color: #fff;
+        border-radius: 6px;
+        font-weight: 500;
+      }
+      .m1 .btn-primary:hover {
+        filter: brightness(1.08);
+      }
+      .m1 .chip {
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 2px 6px;
+        border: 1px solid var(--hairline);
+        border-radius: 4px;
+        color: var(--muted);
+      }
+
+      .m1.app-shell {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        height: 100%;
+      }
+      .m1 .sidebar {
+        border-right: 1px solid var(--hairline);
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .m1 .nav-item {
+        padding: 8px 10px;
+        border-radius: 6px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .m1 .nav-item.active {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .m1 .main {
+        padding: 28px 32px;
+      }
+      .m1 .main h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 4px;
+      }
+      .m1 .main .sub {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 24px;
+      }
+      .m1 .task-card {
+        padding: 16px;
+        background: var(--surface);
+        border: 1px solid var(--hairline);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        transition: border-color 0.15s;
+      }
+      .m1 .task-card:hover {
+        border-color: rgba(94, 106, 210, 0.4);
+      }
+      .m1 .task-meta {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      .m1 .prio {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--accent);
+      }
+      .m1 table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      .m1 th,
+      .m1 td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--hairline);
+        text-align: left;
+      }
+      .m1 th {
+        color: var(--muted);
+        font-weight: 500;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* ═══ M2 Notion Paper ═══ */
+      .m2 {
+        --bg: #ffffff;
+        --cream: #f7f6f3;
+        --ink: #37352f;
+        --muted: #787774;
+        --hairline: #e9e9e7;
+        --accent: #37352f;
+        --font-body: 'DM Sans', system-ui, sans-serif;
+        --font-display: 'Source Serif 4', Georgia, serif;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .m2 .wordmark-main {
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+      .m2 .wordmark-sub {
+        font-size: 13px;
+        color: var(--muted);
+        font-family: var(--font-body);
+      }
+
+      .m2.login {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 100%;
+      }
+      .m2 .login-left {
+        background: var(--cream);
+        padding: 64px 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .m2 .login-left p {
+        font-family: var(--font-display);
+        font-size: 28px;
+        line-height: 1.35;
+        max-width: 360px;
+      }
+      .m2 .login-right {
+        padding: 64px 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-width: 420px;
+      }
+      .m2 .input {
+        padding: 12px 14px;
+        border: 1px solid var(--hairline);
+        border-radius: 4px;
+        background: #fff;
+        color: var(--ink);
+        margin-bottom: 12px;
+      }
+      .m2 .btn-primary {
+        padding: 12px 20px;
+        background: var(--ink);
+        color: #fff;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+      .m2 .btn-primary:hover {
+        background: #2f2e2a;
+      }
+
+      .m2.app-shell {
+        background: var(--cream);
+        padding: 40px 48px;
+        height: 100%;
+      }
+      .m2 .block {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px 24px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(15, 15, 15, 0.04);
+        transition: transform 0.2s ease-out, box-shadow 0.2s;
+      }
+      .m2 .block:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(15, 15, 15, 0.08);
+      }
+      .m2 .pill {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .m2 .top-nav {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 32px;
+        font-size: 14px;
+      }
+      .m2 .top-nav span {
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .m2 .top-nav span.on {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      /* ═══ M3 Dashboard Dense ═══ */
+      .m3 {
+        --bg: #0c0c0e;
+        --surface: #141416;
+        --hover: #1a1a1e;
+        --text: #e8e8ea;
+        --muted: #8b8b90;
+        --accent: #6b8f9f;
+        --hairline: #222226;
+        --font: 'IBM Plex Sans', system-ui, sans-serif;
+        --mono: 'IBM Plex Mono', monospace;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 13px;
+      }
+
+      .m3 .wordmark {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+      }
+
+      .m3.login {
+        display: flex;
+        flex-direction: column;
+      }
+      .m3 .top-bar {
+        height: 48px;
+        border-bottom: 1px solid var(--hairline);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        gap: 24px;
+      }
+      .m3 .login-body {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .m3 .login-form {
+        width: 320px;
+      }
+      .m3 .input {
+        padding: 8px 10px;
+        background: var(--surface);
+        border: 1px solid var(--hairline);
+        border-radius: 2px;
+        color: var(--text);
+        margin-bottom: 8px;
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .m3 .btn-primary {
+        padding: 8px 16px;
+        background: var(--accent);
+        color: #0c0c0e;
+        border-radius: 2px;
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      .m3.app-shell {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .m3 .stats {
+        display: flex;
+        gap: 1px;
+        background: var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+      }
+      .m3 .stat {
+        flex: 1;
+        background: var(--surface);
+        padding: 12px 20px;
+      }
+      .m3 .stat label {
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .m3 .stat strong {
+        display: block;
+        font-size: 20px;
+        margin-top: 4px;
+      }
+      .m3 table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .m3 th,
+      .m3 td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--hairline);
+        text-align: left;
+      }
+      .m3 th {
+        background: var(--surface);
+        color: var(--muted);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .m3 tr:hover td {
+        background: var(--hover);
+      }
+      .m3 .mono {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--accent);
+      }
+
+      /* ═══ M4 Minimal Column ═══ */
+      .m4 {
+        --bg: #fafafa;
+        --text: #111111;
+        --muted: #6b6b6b;
+        --accent: #2563eb;
+        --font: 'Literata', Georgia, serif;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 17px;
+        line-height: 1.65;
+      }
+
+      .m4 .wordmark-main {
+        font-size: 42px;
+        font-weight: 600;
+        line-height: 1.1;
+      }
+      .m4 .wordmark-sub {
+        font-size: 14px;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+
+      .m4.login,
+      .m4.focus,
+      .m4.board-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 48px;
+      }
+      .m4 .column {
+        width: 100%;
+        max-width: 640px;
+      }
+      .m4 .input {
+        padding: 14px 0;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        background: transparent;
+        color: var(--text);
+        margin-bottom: 24px;
+        font-family: var(--font);
+        font-size: 17px;
+      }
+      .m4 .btn-primary {
+        padding: 12px 0;
+        background: none;
+        color: var(--accent);
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 4px;
+      }
+      .m4 h2 {
+        font-size: 32px;
+        font-weight: 600;
+        margin: 0 0 8px;
+      }
+      .m4 .today-task {
+        padding: 24px 0;
+        border-bottom: 1px solid #e5e5e5;
+        opacity: 1;
+        transition: opacity 0.4s ease;
+      }
+      .m4 .today-task:hover {
+        opacity: 0.85;
+      }
+      .m4 .link {
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 32px;
+        cursor: pointer;
+      }
+      .m4 .board-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .m4 .board-list li {
+        padding: 16px 0;
+        border-bottom: 1px solid #e5e5e5;
+      }
+
+      /* ═══ M5 Warm SaaS ═══ */
+      .m5 {
+        --bg: #f4f4f5;
+        --card: #ffffff;
+        --text: #18181b;
+        --muted: #71717a;
+        --accent: #0d9488;
+        --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      .m5 .badge {
+        display: inline-block;
+        padding: 6px 14px;
+        background: var(--accent);
+        color: #fff;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 13px;
+      }
+      .m5 .wordmark-sub {
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 8px;
+      }
+
+      .m5.login {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 100%;
+      }
+      .m5 .illus {
+        background: linear-gradient(135deg, #ccfbf1 0%, #f4f4f5 60%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 13px;
+        border-right: 1px solid #e4e4e7;
+      }
+      .m5 .login-form {
+        padding: 64px 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .m5 .input {
+        padding: 14px 16px;
+        border: 1px solid #e4e4e7;
+        border-radius: 12px;
+        background: #fff;
+        margin-bottom: 12px;
+      }
+      .m5 .btn-primary {
+        padding: 14px;
+        background: var(--accent);
+        color: #fff;
+        border-radius: 12px;
+        font-weight: 600;
+        width: 100%;
+      }
+      .m5 .btn-primary:hover {
+        background: #0f766e;
+      }
+
+      .m5.app-shell {
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        height: 100%;
+        gap: 0;
+      }
+      .m5 .rail {
+        background: var(--card);
+        border-right: 1px solid #e4e4e7;
+        padding: 20px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+      }
+      .m5 .rail .ico {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: #f4f4f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .m5 .rail .ico.on {
+        background: #ccfbf1;
+        color: var(--accent);
+      }
+      .m5 .content {
+        padding: 32px 40px;
+      }
+      .m5 .card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        transition: transform 0.25s ease;
+      }
+      .m5 .card:hover {
+        transform: translateY(-2px);
+      }
+      .m5 .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .screen,
+        .m2 .block,
+        .m5 .card {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="gallery-header">
+      <h1>pushME · 现代 5 方向 Demo 画廊 v0</h1>
+      <p>1280×800 · 任务榜真实样例 · 右下角 Tweaks 切换</p>
+    </header>
+
+    <div class="gallery-stage">
+      <div class="canvas-scaler" id="scaler">
+        <div class="canvas" id="canvas">
+          <!-- M1 LOGIN -->
+          <div class="screen m1 login" data-dir="m1" data-view="login">
+            <div class="login-card">
+              <div class="wordmark-main">pushME</div>
+              <div class="wordmark-sub">推手</div>
+              <h2>登录</h2>
+              <p>邮箱 Magic Link，无密码。</p>
+              <input class="input" type="email" placeholder="your@email.com" value="760274589@qq.com" readonly />
+              <button class="btn btn-primary" type="button">发送登录链接</button>
+              <div style="margin-top:16px"><span class="chip">⌘K 搜索</span></div>
+            </div>
+          </div>
+          <!-- M1 FOCUS -->
+          <div class="screen m1 app-shell" data-dir="m1" data-view="focus">
+            <aside class="sidebar">
+              <div class="wordmark-main">pushME</div>
+              <div class="wordmark-sub">推手</div>
+              <div style="margin-top:24px" class="nav-item active">聚焦</div>
+              <div class="nav-item">任务榜</div>
+              <div class="nav-item">设置</div>
+            </aside>
+            <main class="main">
+              <h2>今日聚焦</h2>
+              <p class="sub">2 件 · 预估 3h</p>
+              <div class="task-card">
+                <div class="task-meta"><span class="prio">A</span><strong>做多设备云软件 @pushME</strong></div>
+                <p style="color:var(--muted);margin:0;font-size:13px">下一步：用 skill 作为基础需求说明来开始；存储原始对话</p>
+              </div>
+              <div class="task-card">
+                <div class="task-meta"><span class="prio">S</span><strong>个人网站搭建</strong></div>
+                <p style="color:var(--muted);margin:0;font-size:13px">下一步：调整 UI 和页面布局</p>
+              </div>
+            </main>
+          </div>
+          <!-- M1 BOARD -->
+          <div class="screen m1 app-shell" data-dir="m1" data-view="board">
+            <aside class="sidebar">
+              <div class="wordmark-main">pushME</div>
+              <div class="nav-item">聚焦</div>
+              <div class="nav-item active">任务榜</div>
+            </aside>
+            <main class="main">
+              <h2>任务榜</h2>
+              <table>
+                <thead><tr><th>类型</th><th>标题</th><th>下一步</th></tr></thead>
+                <tbody>
+                  <tr><td class="prio">S</td><td>个人网站搭建</td><td>调整 UI 和页面布局</td></tr>
+                  <tr><td class="prio">A</td><td>做多设备云软件 @pushME</td><td>用 skill 作为基础需求说明来开始</td></tr>
+                  <tr><td class="prio">B</td><td>养宠游戏，拼贴杂交宠物宝可梦</td><td>杰哥阿伟嘎子…就决定是你了</td></tr>
+                  <tr><td class="prio">C</td><td>建立完善 llm wiki 体系</td><td>—</td></tr>
+                </tbody>
+              </table>
+            </main>
+          </div>
+
+          <!-- M2 LOGIN -->
+          <div class="screen m2 login" data-dir="m2" data-view="login">
+            <div class="login-left">
+              <div class="wordmark-main">推手</div>
+              <div class="wordmark-sub">pushME</div>
+              <p style="margin-top:32px;font-family:var(--font-display)">把模糊目标，推成今天能做完的事。</p>
+            </div>
+            <div class="login-right">
+              <p style="margin:0 0 8px;color:var(--muted)">欢迎回来</p>
+              <input class="input" type="email" value="760274589@qq.com" readonly />
+              <button class="btn btn-primary" type="button">发送登录链接</button>
+            </div>
+          </div>
+          <!-- M2 FOCUS -->
+          <div class="screen m2 app-shell" data-dir="m2" data-view="focus">
+            <div class="top-nav">
+              <span class="on">聚焦</span><span>任务榜</span>
+            </div>
+            <div class="wordmark-main" style="font-size:22px;margin-bottom:24px">今日</div>
+            <div class="block">
+              <span class="pill tag-a">A</span>
+              <strong style="display:block;margin-top:12px">做多设备云软件 @pushME</strong>
+              <p style="color:var(--muted);margin:8px 0 0;font-size:14px">下一步：用 skill 作为基础需求说明来开始</p>
+            </div>
+            <div class="block">
+              <span class="pill tag-s">S</span>
+              <strong style="display:block;margin-top:12px">个人网站搭建</strong>
+              <p style="color:var(--muted);margin:8px 0 0;font-size:14px">下一步：调整 UI 和页面布局</p>
+            </div>
+          </div>
+          <!-- M2 BOARD -->
+          <div class="screen m2 app-shell" data-dir="m2" data-view="board">
+            <div class="top-nav"><span>聚焦</span><span class="on">任务榜</span></div>
+            <div class="block" style="padding:0">
+              <table style="width:100%;border-collapse:collapse;font-size:14px">
+                <tr style="border-bottom:1px solid var(--hairline)"><td style="padding:12px 16px"><span class="pill tag-s">S</span></td><td style="padding:12px">个人网站搭建</td><td style="padding:12px;color:var(--muted)">调整 UI…</td></tr>
+                <tr style="border-bottom:1px solid var(--hairline)"><td style="padding:12px 16px"><span class="pill tag-a">A</span></td><td style="padding:12px">做多设备云软件 @pushME</td><td style="padding:12px;color:var(--muted)">用 skill…</td></tr>
+                <tr style="border-bottom:1px solid var(--hairline)"><td style="padding:12px 16px"><span class="pill tag-b">B</span></td><td style="padding:12px">养宠游戏…</td><td style="padding:12px;color:var(--muted)">杰哥阿伟…</td></tr>
+                <tr><td style="padding:12px 16px"><span class="pill tag-c">C</span></td><td style="padding:12px">llm wiki 体系</td><td style="padding:12px;color:var(--muted)">—</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- M3 LOGIN -->
+          <div class="screen m3 login" data-dir="m3" data-view="login">
+            <div class="top-bar">
+              <span class="wordmark">pushME</span>
+              <span style="color:var(--muted)">内部系统 · 登录</span>
+            </div>
+            <div class="login-body">
+              <div class="login-form">
+                <label style="color:var(--muted);font-size:11px">EMAIL</label>
+                <input class="input" type="email" value="760274589@qq.com" readonly />
+                <button class="btn btn-primary" type="button">AUTH →</button>
+              </div>
+            </div>
+          </div>
+          <!-- M3 FOCUS -->
+          <div class="screen m3 app-shell" data-dir="m3" data-view="focus">
+            <div class="top-bar">
+              <span class="wordmark">pushME</span>
+              <span style="color:var(--muted)">聚焦视图</span>
+            </div>
+            <div class="stats">
+              <div class="stat"><label>今日任务</label><strong>2</strong></div>
+              <div class="stat"><label>进行中</label><strong>1</strong></div>
+              <div class="stat"><label>阻塞</label><strong>0</strong></div>
+            </div>
+            <table>
+              <thead><tr><th>类型</th><th>标题</th><th>状态</th><th>下一步</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">A</td><td>做多设备云软件 @pushME</td><td>执行中</td><td>用 skill 开始</td></tr>
+                <tr><td class="mono">S</td><td>个人网站搭建</td><td>未开始</td><td>调整 UI</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- M3 BOARD -->
+          <div class="screen m3 app-shell" data-dir="m3" data-view="board">
+            <div class="top-bar"><span class="wordmark">pushME</span><span>任务榜 · 全量</span></div>
+            <table>
+              <thead><tr><th>类型</th><th>标题</th><th>详情</th><th>下一步</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">S</td><td>个人网站搭建</td><td>有基础框架</td><td>调整 UI</td></tr>
+                <tr><td class="mono">A</td><td>做多设备云软件 @pushME</td><td>云服务 API</td><td>用 skill 开始</td></tr>
+                <tr><td class="mono">B</td><td>养宠游戏…</td><td>AI 生成形态</td><td>杰哥阿伟…</td></tr>
+                <tr><td class="mono">C</td><td>llm wiki 体系</td><td>记忆存储</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- M4 LOGIN -->
+          <div class="screen m4 login" data-dir="m4" data-view="login">
+            <div class="column">
+              <div class="wordmark-main">推手</div>
+              <div class="wordmark-sub">pushME</div>
+              <p style="margin:32px 0 24px;color:var(--muted)">回来继续。</p>
+              <input class="input" type="email" value="760274589@qq.com" readonly />
+              <button class="btn btn-primary" type="button">发送登录链接</button>
+            </div>
+          </div>
+          <!-- M4 FOCUS -->
+          <div class="screen m4 focus" data-dir="m4" data-view="focus">
+            <div class="column">
+              <p style="color:var(--muted);font-size:14px;margin:0">今日 · 6月28日</p>
+              <h2>只做这两件</h2>
+              <div class="today-task">
+                <strong>A · 做多设备云软件 @pushME</strong>
+                <p style="color:var(--muted);margin:8px 0 0;font-size:15px">下一步：用 skill 作为基础需求说明来开始</p>
+              </div>
+              <div class="today-task">
+                <strong>S · 个人网站搭建</strong>
+                <p style="color:var(--muted);margin:8px 0 0;font-size:15px">下一步：调整 UI 和页面布局</p>
+              </div>
+              <div class="link">查看完整任务榜 →</div>
+            </div>
+          </div>
+          <!-- M4 BOARD -->
+          <div class="screen m4 board-wrap" data-dir="m4" data-view="board">
+            <div class="column">
+              <h2 style="font-size:24px">任务榜</h2>
+              <ul class="board-list">
+                <li><strong>S</strong> 个人网站搭建</li>
+                <li><strong>A</strong> 做多设备云软件 @pushME</li>
+                <li><strong>B</strong> 养宠游戏，拼贴杂交宠物宝可梦</li>
+                <li><strong>C</strong> 建立完善 llm wiki 体系</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- M5 LOGIN -->
+          <div class="screen m5 login" data-dir="m5" data-view="login">
+            <div class="illus">[illustration 占位]</div>
+            <div class="login-form">
+              <span class="badge">pushME</span>
+              <div class="wordmark-sub">推手 · AI 项目经理</div>
+              <p style="margin:24px 0 16px;color:var(--muted)">邮箱登录，安全省心</p>
+              <input class="input" type="email" value="760274589@qq.com" readonly />
+              <button class="btn btn-primary" type="button">发送登录链接</button>
+            </div>
+          </div>
+          <!-- M5 FOCUS -->
+          <div class="screen m5 app-shell" data-dir="m5" data-view="focus">
+            <nav class="rail">
+              <div class="ico on">[icon]</div>
+              <div class="ico">[icon]</div>
+              <div class="ico">[icon]</div>
+            </nav>
+            <div class="content">
+              <span class="badge">pushME</span>
+              <div class="wordmark-sub">今日聚焦</div>
+              <div class="grid" style="margin-top:24px">
+                <div class="card">
+                  <span style="color:var(--accent);font-weight:600;font-size:12px">A 级</span>
+                  <strong style="display:block;margin-top:8px">做多设备云软件 @pushME</strong>
+                  <p style="color:var(--muted);font-size:13px;margin:8px 0 0">用 skill 作为基础需求说明来开始</p>
+                </div>
+                <div class="card">
+                  <span style="color:var(--accent);font-weight:600;font-size:12px">S 级</span>
+                  <strong style="display:block;margin-top:8px">个人网站搭建</strong>
+                  <p style="color:var(--muted);font-size:13px;margin:8px 0 0">调整 UI 和页面布局</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- M5 BOARD -->
+          <div class="screen m5 app-shell" data-dir="m5" data-view="board">
+            <nav class="rail">
+              <div class="ico">[icon]</div>
+              <div class="ico on">[icon]</div>
+            </nav>
+            <div class="content">
+              <h2 style="font-size:20px;font-weight:600;margin:0 0 20px">任务榜</h2>
+              <div class="card"><strong>S</strong> 个人网站搭建 <span style="color:var(--muted)">· 调整 UI</span></div>
+              <div class="card"><strong>A</strong> 做多设备云软件 @pushME</div>
+              <div class="card"><strong>B</strong> 养宠游戏…</div>
+              <div class="card"><strong>C</strong> llm wiki 体系</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" id="tweaks-toggle">Tweaks</button>
+    <div id="tweaks-panel" class="hidden">
+      <h2>Tweaks</h2>
+      <label>方向</label>
+      <div class="tweaks-group" id="dir-buttons">
+        <button type="button" class="tweaks-btn active" data-dir="m1">M1 · Linear 暗色</button>
+        <button type="button" class="tweaks-btn" data-dir="m2">M2 · Notion 纸感</button>
+        <button type="button" class="tweaks-btn" data-dir="m3">M3 · 仪表盘密度</button>
+        <button type="button" class="tweaks-btn" data-dir="m4">M4 · 极简单栏</button>
+        <button type="button" class="tweaks-btn" data-dir="m5">M5 · 温和 SaaS</button>
+      </div>
+      <label>屏幕</label>
+      <div class="tweaks-view-row" id="view-buttons">
+        <button type="button" class="tweaks-btn tweaks-btn-view active" data-view="login">登录</button>
+        <button type="button" class="tweaks-btn tweaks-btn-view" data-view="focus">聚焦</button>
+        <button type="button" class="tweaks-btn tweaks-btn-view" data-view="board">任务榜</button>
+      </div>
+      <p class="tweaks-hint">
+        标记方式：看完后在对话里说「M2 布局 KEEP 强」等，我会写入 selection-rules.md。<br />
+        文件路径：web/design/gallery.html
+      </p>
+    </div>
+
+    <script>
+      const STORAGE_KEY = 'pushme-gallery-v0';
+      let currentDir = 'm1';
+      let currentView = 'login';
+      const dirButtons = document.querySelectorAll('#dir-buttons .tweaks-btn');
+      const viewButtons = document.querySelectorAll('#view-buttons .tweaks-btn');
+      const screens = document.querySelectorAll('.screen');
+      const scaler = document.getElementById('scaler');
+      const tweaksToggle = document.getElementById('tweaks-toggle');
+      const tweaksPanel = document.getElementById('tweaks-panel');
+
+      function loadState() {
+        try {
+          const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+          if (s.dir) currentDir = s.dir;
+          if (s.view) currentView = s.view;
+        } catch (_) {}
+      }
+
+      function saveState() {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ dir: currentDir, view: currentView })
+        );
+      }
+
+      function syncButtons() {
+        dirButtons.forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.dir === currentDir);
+        });
+        viewButtons.forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.view === currentView);
+        });
+      }
+
+      function applyView() {
+        screens.forEach((el) => {
+          const match =
+            el.dataset.dir === currentDir && el.dataset.view === currentView;
+          el.classList.toggle('active', match);
+        });
+        syncButtons();
+        saveState();
+      }
+
+      dirButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          currentDir = btn.dataset.dir;
+          applyView();
+        });
+      });
+
+      viewButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          currentView = btn.dataset.view;
+          applyView();
+        });
+      });
+
+      function scaleCanvas() {
+        const wrap = document.querySelector('.gallery-stage');
+        const maxW = wrap.clientWidth - 48;
+        const maxH = wrap.clientHeight - 48;
+        const scale = Math.min(maxW / 1280, maxH / 800, 1);
+        scaler.style.transform = 'scale(' + scale + ')';
+      }
+
+      tweaksToggle.addEventListener('click', () => {
+        tweaksPanel.classList.toggle('hidden');
+      });
+
+      window.addEventListener('resize', scaleCanvas);
+
+      loadState();
+      applyView();
+      scaleCanvas();
+    </script>
+  </body>
+</html>
