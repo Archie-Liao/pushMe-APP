@@ -12,6 +12,8 @@
 
 **不要读** `journal/corpus/*.jsonl`（原始语料归档，仅供蒸馏；体积大且不是你的项目说明书）。
 
+开发 APP 时**按需读** [`.cursor/skills/pushme-skill/SKILL.md`](.cursor/skills/pushme-skill/SKILL.md) 及 `references/`（产品与人格**参考**，不是日常召唤的 Skill）。
+
 ## 第二步：更新什么（会话结束前检查）
 
 | 文件 | 何时更新 |
@@ -59,7 +61,7 @@ frontmatter 示例：`timestamp: 2026-06-28 16:45:23` 或 `timestamp: 2026-06-28
 ## 项目速览
 
 - **产品**：推手 pushME — AI 项目经理（拆解、监督、质疑、评估）
-- **Skill 位置**：`%USERPROFILE%\.cursor\skills\pushme-skill\`（不在本仓库）
+- **参考**：`.cursor/skills/pushme-skill/` — APP 开发时的产品/人格参考（用户不再日常召唤）
 - **仓库**：APP 代码与上下文体系；APP 尚未 scaffold
 - **用户**：AI 应用层初学者，不懂编程，规划强、执行弱
 - **详细方案**：见 Cursor plan 或 `.context/` 各文件

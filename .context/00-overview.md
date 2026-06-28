@@ -16,7 +16,7 @@ timestamp: 2026-06-27T00:00:00+08:00
 
 | 阶段 | 形态 | 状态 |
 |------|------|------|
-| MVP | `%USERPROFILE%\.cursor\skills\pushme-skill\` + 本地 md 文件体系 | 已有，待真实激活测试 |
+| MVP | `.cursor/skills/pushme-skill/` 作开发参考 + 运行时 `~/.pushme/` md 体系 | 原型已有，逻辑待写入 APP |
 | 目标 | 跨端 PWA APP（电脑+手机），云同步 + DeepSeek + 主动推送 | 方案已确认，未开工 |
 | 远期 | Capacitor 套壳上架；蒸馏「你自己」接入网站与 APP | 规划中 |
 

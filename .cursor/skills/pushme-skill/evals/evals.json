@@ -1,0 +1,46 @@
+{
+  "skill_name": "pushme-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "推手，帮我开始管理任务。我的Excel文件在 D:\\咕咕_26369_廖智强\\AI工具实验\\manager-skill\\ 下面，任务榜.xlsx 和 Archie修仙录.xlsx。",
+      "expected_output": "创建完整的 pushme/ 文件体系：current.md（当前焦点1-3项）、backlog.md（按S/A/B/C排列的待做池）、overview.md（全量项目状态）、config.md（用户配置）、patterns.md（初始模式）、plans/（至少1个项目方案）、check-ins/（首次记录）",
+      "files": [],
+      "expectations": [
+        "pushme/ directory exists in outputs",
+        "pushme/current.md exists and contains at least 1 task item",
+        "pushme/overview.md exists and lists project statuses",
+        "pushme/config.md exists and contains user work/time info",
+        "pushme/backlog.md exists and contains backlog items",
+        "At least one plan file exists in pushme/plans/",
+        "pushme/patterns.md exists"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "早上好推手，今天我应该做什么？",
+      "expected_output": "读取 pushme/ 已有文件，给出今日最高优先级任务、可选的1-2件次要任务、以及一句话的最小可执行下一步。写入 check-ins/YYYY-MM-DD.md 记录。",
+      "files": [],
+      "expectations": [
+        "Response references specific task names/data from pushme/ files",
+        "Identifies 1 top-priority task for today",
+        "Provides a concrete minimum executable next step",
+        "Creates a check-in record in pushme/check-ins/ with today's date",
+        "Checks for overdue tasks or deadline items"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "推手，我刚完成了一个任务——用Claude Code搭建了一个个人博客的MVP，花了大概3小时，比我预估的多了1小时。帮我评估一下。",
+      "expected_output": "四维评估（完成度、效率偏差、偏差分析、可复用经验），量化指标，归档到 archive/，更新 current.md 移除已完成任务，更新 patterns.md。",
+      "files": [],
+      "expectations": [
+        "Uses four-dimension evaluation: 完成度, 效率偏差, 偏差分析, 可复用经验",
+        "Quantifies at least 2 metrics with numbers",
+        "Creates an archive file in pushme/archive/",
+        "Updates pushme/current.md to remove or mark the completed task",
+        "Identifies at least 1 reusable pattern or lesson"
+      ]
+    }
+  ]
+}

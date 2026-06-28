@@ -10,18 +10,17 @@ timestamp: 2026-06-27T00:00:00+08:00
 
 ```
 pushMe-APP/
-├── AGENTS.md              # Agent 行为契约（Cursor 自动加载）
-├── .context/              # 项目记忆 mini bundle
-├── journal/               # 对话语料（corpus 自动 + conversations 手动整理）
-├── .cursor/hooks/         # Cursor Hooks 采集脚本
-├── scripts/               # 工具脚本（distill_prep）
-└── 任务榜.xlsx            # 原始任务数据
+├── AGENTS.md
+├── .context/
+├── journal/
+├── .cursor/
+│   ├── hooks/             # 对话语料自动采集
+│   └── skills/            # 项目内技能
+│       ├── pushme-skill/      # APP 开发参考（非日常召唤）
+│       └── web-design-engineer/ # 网站设计
+├── scripts/
+└── 任务榜.xlsx
 ```
-
-**Cursor Skills**（不在本仓库，位于 `%USERPROFILE%\.cursor\skills\`）：
-
-- `pushme-skill/` — 推手 Skill MVP
-- `web-design-engineer/` — 网站设计 skill
 
 ## pushME APP 方案（未实施）
 
