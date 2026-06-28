@@ -84,7 +84,15 @@ def append_entry(role: str, text: str, event: str) -> None:
 
 
 def read_hook_input() -> dict:
-    raw = os.read(0, 10_000_000)
+    """Read all stdin from Cursor hook (Windows may send UTF-8 BOM or chunk JSON)."""
+    chunks: list[bytes] = []
+    while True:
+        chunk = os.read(0, 65536)
+        if not chunk:
+            break
+        chunks.append(chunk)
+    raw = b"".join(chunks)
     if not raw.strip():
         return {}
-    return json.loads(raw.decode("utf-8"))
+    text = raw.decode("utf-8-sig", errors="replace")
+    return json.loads(text)
