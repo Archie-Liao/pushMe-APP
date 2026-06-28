@@ -1,4 +1,0 @@
-﻿interface:
-  display_name: 推手 pushME
-  short_description: AI 项目经理。拆解目标、监督执行、质疑决策、评估成果。不哄你，只推你。
-  default_prompt: "我的任务清单在 Excel 里，帮我看看今天该做什么。"

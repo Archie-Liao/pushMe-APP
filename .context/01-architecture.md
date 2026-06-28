@@ -14,11 +14,14 @@ pushMe-APP/
 ├── .context/              # 项目记忆 mini bundle
 ├── journal/               # 对话语料（corpus 自动 + conversations 手动整理）
 ├── .cursor/hooks/         # Cursor Hooks 采集脚本
-├── pushme-skill/          # 推手 Skill MVP
-├── web-design-engineer/   # 其他 skill（网站设计参考）
-├── scripts/               # 工具脚本（read_tasks, distill_prep）
+├── scripts/               # 工具脚本（distill_prep）
 └── 任务榜.xlsx            # 原始任务数据
 ```
+
+**Cursor Skills**（不在本仓库，位于 `%USERPROFILE%\.cursor\skills\`）：
+
+- `pushme-skill/` — 推手 Skill MVP
+- `web-design-engineer/` — 网站设计 skill
 
 ## pushME APP 方案（未实施）
 

@@ -16,7 +16,7 @@ timestamp: 2026-06-27T00:00:00+08:00
 
 | 阶段 | 形态 | 状态 |
 |------|------|------|
-| MVP | `pushme-skill/` Codex/Claude Skill + 本地 md 文件体系 | 已有，待真实激活测试 |
+| MVP | `%USERPROFILE%\.cursor\skills\pushme-skill\` + 本地 md 文件体系 | 已有，待真实激活测试 |
 | 目标 | 跨端 PWA APP（电脑+手机），云同步 + DeepSeek + 主动推送 | 方案已确认，未开工 |
 | 远期 | Capacitor 套壳上架；蒸馏「你自己」接入网站与 APP | 规划中 |
 
@@ -24,7 +24,7 @@ timestamp: 2026-06-27T00:00:00+08:00
 
 - 名称：推手 pushME
 - 立场：盟友，不是应声虫；会质疑拖延、优先级混乱、反复改计划
-- 底层参考：马斯克式质疑 + PM 结构化（见 `pushme-skill/references/pm-framework.md`）
+- 底层参考：马斯克式质疑 + PM 结构化（见 `.cursor/skills/pushme-skill/references/pm-framework.md`）
 
 ## 用户现有数据
 

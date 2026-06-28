@@ -59,7 +59,8 @@ frontmatter 示例：`timestamp: 2026-06-28 16:45:23` 或 `timestamp: 2026-06-28
 ## 项目速览
 
 - **产品**：推手 pushME — AI 项目经理（拆解、监督、质疑、评估）
-- **仓库**：`pushme-skill/` 为现有 Skill MVP；APP 尚未 scaffold
+- **Skill 位置**：`%USERPROFILE%\.cursor\skills\pushme-skill\`（不在本仓库）
+- **仓库**：APP 代码与上下文体系；APP 尚未 scaffold
 - **用户**：AI 应用层初学者，不懂编程，规划强、执行弱
 - **详细方案**：见 Cursor plan 或 `.context/` 各文件
 

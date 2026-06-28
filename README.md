@@ -3,11 +3,23 @@
 **推手 pushME** — 跨端 AI 项目经理：拆解任务、监督执行、质疑决策、评估复盘。  
 不是软蛋式助手，是推你执行的那个人。
 
+## Cursor Skills（不在本仓库内）
+
+以下 skill 安装在用户级目录，Cursor 全局可用：
+
+| Skill | 路径 |
+|-------|------|
+| pushme-skill | `C:\Users\PC\.cursor\skills\pushme-skill\` |
+| web-design-engineer | `C:\Users\PC\.cursor\skills\web-design-engineer\` |
+
+通用路径：`%USERPROFILE%\.cursor\skills\<skill-name>\`
+
+激活：对话中说 **「推手」** / **「pushme」**（pushME）；网站设计时用 web-design-engineer。
+
 ## 仓库里有什么
 
 | 路径 | 说明 |
 |------|------|
-| [`pushme-skill/`](pushme-skill/SKILL.md) | Skill MVP（Claude/Codex 可用，说「推手」激活） |
 | [`AGENTS.md`](AGENTS.md) | **Cursor 自动加载**：新 AI 必读规则 |
 | [`.context/`](.context/04-progress.md) | 项目记忆（目的 / 架构 / 决策 / 踩坑 / **进度**） |
 | [`journal/`](journal/README.md) | 对话语料（Hook 自动 + 手动「整理」） |
@@ -25,8 +37,7 @@
 
 ### 使用 pushME Skill
 
-1. 将 `pushme-skill/` 复制到 Cursor skills 目录
-2. 对话中说 **「推手」** 或 **「pushme」**
+Skill 已安装在 `%USERPROFILE%\.cursor\skills\pushme-skill\`，对话中说 **「推手」** 或 **「pushme」** 即可。
 
 ### 克隆本仓库
 
@@ -69,4 +80,4 @@ git push
 
 ## License
 
-Skill 与文档随项目维护；第三方 skill（如 `web-design-engineer/`）遵循各自许可。
+本仓库文档与脚本随项目维护。`pushme-skill`、`web-design-engineer` 安装在 `.cursor/skills/`，遵循各自许可。

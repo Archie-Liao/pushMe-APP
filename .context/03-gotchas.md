@@ -11,7 +11,7 @@ timestamp: 2026-06-27T00:00:00+08:00
 ### GBK 编码导致 Python 输出崩溃
 
 - **现象**：`read_tasks.py` 在 Windows 控制台打印中文报错
-- **解法**：脚本顶部强制 stdout/stderr UTF-8（见 `pushme-skill/scripts/read_tasks.py`）
+- **解法**：脚本顶部强制 stdout/stderr UTF-8（见 `.cursor/skills/pushme-skill/scripts/read_tasks.py`）
 
 ### 中文路径在 PowerShell 管道中丢失
 
