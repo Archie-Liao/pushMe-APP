@@ -12,7 +12,7 @@
 | 轨道 | 目录 | 谁写 | 内容 |
 |------|------|------|------|
 | 自动 | `corpus/YYYY-MM-DD.jsonl` | Cursor Hooks | 无损：user 全文 + assistant 全文 + 秒级时间戳 |
-| 手动 | `conversations/YYYY-MM-DD.md` | 用户说「整理」时 agent | curated：你原文保真 + AI 1～2 句 |
+| 手动 | `conversations/YYYY-MM-DD.md` | 用户说「整理」时 agent | **你的段落必须全文保真**，禁止用省略号缩写；AI 段落 1～2 句 |
 
 蒸馏时**以 user 发言为主**；assistant 仅作上下文。
 

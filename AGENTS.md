@@ -47,7 +47,7 @@ frontmatter 示例：`timestamp: 2026-06-28 16:45:23` 或 `timestamp: 2026-06-28
 
 1. 用终端 `Get-Date -Format "yyyy-MM-dd HH:mm:ss"` 取**电脑北京时间**（精确到秒，见上节）
 2. 将本轮对话写入 `journal/conversations/YYYY-MM-DD.md`
-3. 格式：用户原文**保真**；agent 回复压到 **1～2 句**要点
+3. 格式：用户原文**完整保真**（禁止用 `……` 或「等」省略未写出的内容）；agent 回复压到 **1～2 句**要点
 4. 不修改 `corpus/*.jsonl`（Hook 已自动归档）
 
 ## 语料与 Hooks
